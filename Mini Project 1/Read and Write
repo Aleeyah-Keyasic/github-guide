@@ -1,0 +1,39 @@
+from functions.communfn import *
+import streamlit as st
+
+st.title('Reading & Writing')
+RemoveIndex()
+
+lec, ecr = st.tabs(["Reading", "Writing"])
+# -------------- READING ----------------
+with lec:
+    f = st.file_uploader("Import One Image :",type=(["pgm"]))
+    if f is not None:
+        path_in = f.name
+        print(path_in)
+        st.pyplot(showImage('images/'+path_in))
+        # READING THE IMAGE
+        dim = {'lx': 0, 'ly': 0}
+        mat = lireImagePgm('images/'+path_in, dim)
+        with st.expander("More Information About the Image"):
+            st.table(
+                [["Size",f.size],
+                ["Number of lines",dim['lx']],
+                ["Number of Columns",dim['ly']],
+                ["Gray Level", 255]]
+            )
+    else:
+        path_in = None
+
+# -------------- WRITING----------------
+with ecr:
+    name = st.text_input("Image Name")
+    lx = int(st.number_input("Number of Lines"))
+    ly = int(st.number_input("Number of Columns"))
+    ng = int(st.number_input("Gray Level"))
+    txt = st.text_area(" Matrics")
+    mat = [[int(j) for j in i.split(' ')] for i in txt.splitlines()]
+    btn = showBtn("Write")
+    if (btn):
+        ecrireImagePgm(name, mat, lx, ly, ng)
+        st.pyplot(showImage(name))
